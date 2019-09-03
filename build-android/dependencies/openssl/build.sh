@@ -1,7 +1,7 @@
 #!/bin/sh
 
 build_version=3
-version=1.0.2r
+version=1.0.2s
 package_name=openssl-android
 
 if test "x$ANDROID_NDK" = x ; then
