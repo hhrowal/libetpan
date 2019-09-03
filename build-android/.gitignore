@@ -2,6 +2,7 @@ dependencies/cyrus-sasl/cyrus-sasl-android-*.zip
 dependencies/cyrus-sasl/build-android/obj
 dependencies/openssl/openssl-android-*.zip
 dependencies/openssl/packages
+dependencies/iconv/iconv-android-*.zip
 include/libetpan
 third-parties
 obj
