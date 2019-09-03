@@ -1,7 +1,7 @@
 #!/bin/sh
 
 build_version=3
-version=1.0.2j
+version=1.0.2r
 package_name=openssl-android
 
 if test "x$ANDROID_NDK" = x ; then
@@ -15,26 +15,6 @@ if test ! -f packages/openssl-$version.tar.gz; then
   curl -O https://www.openssl.org/source/openssl-$version.tar.gz
   cd ..
 fi
-
-function build_x86_64 {
-  toolchain=x86_64-4.9
-  toolchain_name=x86_64-linux-android
-  arch_cflags=""
-  arch_ldflags=""
-  arch_dir_name="x86_64"
-  openssl_configure_mode="android64"
-  ANDROID_PLATFORM=android-16
-  ARCH_FOLDER=arch-x86_64
-  export MACHINE=x86_64
-  export RELEASE=2.6.37
-  export SYSTEM=android
-  export ARCH=x86_64
-  export CROSS_COMPILE="x86_64-linux-android-"
-  export ANDROID_DEV="$ANDROID_NDK/platforms/$ANDROID_PLATFORM/$ARCH_FOLDER/usr"
-  export HOSTCC=gcc
-  
-  build
-}
 
 function build_armeabi {
   toolchain=arm-linux-androideabi-4.9
@@ -73,6 +53,26 @@ function build_x86 {
   export CROSS_COMPILE="i686-linux-android-"
   export ANDROID_DEV="$ANDROID_NDK/platforms/$ANDROID_PLATFORM/$ARCH_FOLDER/usr"
   export HOSTCC=gcc
+
+  build
+}
+
+function build_x86_64 {
+  toolchain=x86_64-4.9
+  toolchain_name=x86_64-linux-android
+  arch_cflags="-m64 -msse3 -mstackrealign -mfpmath=sse"
+  arch_ldflags=""
+  arch_dir_name="x86_64"
+  ANDROID_PLATFORM=android-21
+  ARCH_FOLDER=arch-x86_64
+  export MACHINE=i686
+  export RELEASE=2.6.37
+  export SYSTEM=android
+  export ARCH=x86_64
+  export CROSS_COMPILE="x86_64-linux-android-"
+  export ANDROID_DEV="$ANDROID_NDK/platforms/$ANDROID_PLATFORM/$ARCH_FOLDER/usr"
+  export HOSTCC=gcc
+  openssl_configure_mode="android-x86 -m64 -B$ANDROID_DEV/lib64"
 
   build
 }
@@ -147,7 +147,7 @@ function build {
   # export CFLAGS="$CPPFLAGS"
   # export LDFLAGS="$arch_ldflags"
   export CROSS_SYSROOT="$ANDROID_NDK/platforms/$ANDROID_PLATFORM/$ARCH_FOLDER"
-  ./Configure $openssl_configure_mode
+  ./Configure no-asm $openssl_configure_mode
   make
   
   mkdir -p "$current_dir/$package_name-$build_version"
@@ -165,6 +165,7 @@ build_armeabi
 build_armeabi_v7a
 build_x86
 build_arm64_v8a
+build_x86_64
 
 cd "$current_dir"
 zip -qry "$package_name-$build_version.zip" "$package_name-$build_version"
