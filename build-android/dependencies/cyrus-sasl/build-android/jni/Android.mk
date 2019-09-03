@@ -51,4 +51,8 @@ LOCAL_C_INCLUDES += $(src_dir) $(src_dir)/include $(src_dir)/plugins \
    $(src_dir)/build-android/include $(OPENSSL_PATH)/include
 LOCAL_SRC_FILES := $(addprefix $(src_dir)/, $(src_files))
 
+LOCAL_CFLAGS := -fPIC
+LOCAL_CXXFLAGS := -fPIC
+LOCAL_CPPFLAGS := -fPIC
+
 include $(BUILD_STATIC_LIBRARY)
